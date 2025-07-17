@@ -6,6 +6,6 @@ services:
     startCommand: python bot.py
     envVars:
       - key: BOT_TOKEN
-        value: <тут встав токен>
+        value: 8087847293:AAH5X3JU_gtgbFklAqNt_6co5j8lkW-NJrQ
       - key: WEBHOOK_URL
         value: https://uno-flip-telegram-bot.onrender.com
