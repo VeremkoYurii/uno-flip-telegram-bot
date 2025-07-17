@@ -25,7 +25,7 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Основна функція
 async def main():
-    application = ApplicationBuilder().token(TOKEN).build()
+    application = ApplicationBuilder().token(BOT_TOKEN).build()
 
     # Обробники
     application.add_handler(CommandHandler("start", start))
