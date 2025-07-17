@@ -1,55 +1,45 @@
-import logging
 import os
+import logging
 from telegram import Update
-from telegram.ext import (
-    ApplicationBuilder,
-    CommandHandler,
-    MessageHandler,
-    ContextTypes,
-    filters,
-)
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 
-# Логування
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO
 )
 
-# Отримуємо токен з змінної середовища
+# Отримуємо токен із змінних середовища
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 if not BOT_TOKEN:
-    raise ValueError("Environment variable BOT_TOKEN is not set")
+    raise ValueError("BOT_TOKEN не встановлено у змінних середовища")
 
-# URL твого вебхука (постав сюди URL твого Render додатка)
-WEBHOOK_URL = "https://uno-flip-telegram-bot.onrender.com/webhook"
+# Ваш URL вебхука (заміни на свій URL від Render)
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")
+if not WEBHOOK_URL:
+    raise ValueError("WEBHOOK_URL не встановлено у змінних середовища")
 
-# Команда /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Привіт! Це UNO Flip бот.")
+    await update.message.reply_text("Привіт! Я твій бот.")
 
-# Відповідь на текстові повідомлення
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(update.message.text)
 
 async def main():
-    application = (
-        ApplicationBuilder()
-        .token(BOT_TOKEN)
-        .build()
-    )
+    application = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    # Обробники команд і повідомлень
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 
-    # Запуск webhook сервера
-    port = int(os.environ.get("PORT", 8443))  # Render зазвичай задає PORT в середовищі
+    port = int(os.environ.get("PORT", "8443"))
+
+    # Видаляємо старі вебхуки, запускаємо новий
     await application.bot.delete_webhook(drop_pending_updates=True)
+
     await application.run_webhook(
         listen="0.0.0.0",
         port=port,
         webhook_url=WEBHOOK_URL,
-        path="/webhook"
+        path="/webhook",
     )
 
 if __name__ == "__main__":
