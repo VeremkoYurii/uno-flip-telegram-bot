@@ -3,8 +3,8 @@ import telegram
 from telegram.ext import Dispatcher, CommandHandler, MessageHandler, filters
 
 # === Налаштуй токен і URL:
-TOKEN = "YOUR_BOT_TOKEN"  # 🔁 Замінити на твій токен
-URL = "https://your-app-name.onrender.com"  # 🔁 Замінити на свій домен Render
+TOKEN = "8087847293:AAH5X3JU_gtgbFklAqNt_6co5j8lkW-NJrQ"  # 🔁 Замінити на твій токен
+URL = "https://uno-flip-telegram-bot.onrender.com"  # 🔁 Замінити на свій домен Render
 
 # === Ініціалізація:
 bot = telegram.Bot(token=TOKEN)
