@@ -1,51 +1,47 @@
-from flask import Flask, request
-import telegram
-from telegram.ext import Dispatcher, CommandHandler, MessageHandler, filters
+import logging
+import os
+from telegram import Update
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 
-# === Налаштуй токен і URL:
-TOKEN = "8087847293:AAH5X3JU_gtgbFklAqNt_6co5j8lkW-NJrQ"  # 🔁 Замінити на твій токен
-URL = "https://uno-flip-telegram-bot.onrender.com"  # 🔁 Замінити на свій домен Render
+# Увімкнення логування
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.INFO
+)
 
-# === Ініціалізація:
-bot = telegram.Bot(token=TOKEN)
-app = Flask(__name__)
+# Токен бота
+TOKEN = os.getenv("BOT_TOKEN")  # Бажано зберігати токен як секрет або змінну середовища
 
-# === Обробка вхідних запитів від Telegram:
-@app.route(f"/{TOKEN}", methods=["POST"])
-def webhook():
-    update = telegram.Update.de_json(request.get_json(force=True), bot)
-    dispatcher.process_update(update)
-    return "ok"
+# Вебхук URL (заміни на свій actual Render URL)
+WEBHOOK_URL = "https://your-app-name.onrender.com/webhook"
 
-# === Просто перевірка, що бот живий:
-@app.route("/")
-def index():
-    return "UNO Flip Bot is alive!"
+# Команда /start
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Привіт! Це UNO Flip бот.")
 
-# === Обробники команд:
-def start(update, context):
-    update.message.reply_text("Привіт! Це UNO Flip бот.")
+# Відповідь на будь-яке повідомлення
+async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(update.message.text)
 
-def echo(update, context):
-    update.message.reply_text(update.message.text)
+# Основна функція
+async def main():
+    application = ApplicationBuilder().token(TOKEN).build()
 
-# === Dispatcher:
-dispatcher = Dispatcher(bot, None, workers=0)
-dispatcher.add_handler(CommandHandler("start", start))
-dispatcher.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+    # Обробники
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 
-# === Запуск Flask і встановлення Webhook:
+    # Налаштування вебхука
+    await application.bot.delete_webhook()
+    await application.start()
+    await application.bot.set_webhook(WEBHOOK_URL)
+    await application.updater.start_webhook(
+        listen="0.0.0.0",
+        port=int(os.environ.get("PORT", 10000)),  # Render автоматично задає PORT
+        url_path="/webhook",
+        webhook_url=WEBHOOK_URL
+    )
+
 if __name__ == "__main__":
-    import os
-    from threading import Thread
-
-    def run_flask():
-        port = int(os.environ.get("PORT", 5000))
-        app.run(host="0.0.0.0", port=port)
-
-    def set_webhook():
-        bot.delete_webhook()
-        bot.set_webhook(f"{URL}/{TOKEN}")
-
-    Thread(target=run_flask).start()
-    set_webhook()
+    import asyncio
+    asyncio.run(main())
