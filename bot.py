@@ -10,7 +10,7 @@ logging.basicConfig(
 )
 
 # Токен бота
-TOKEN = os.getenv("8087847293:AAH5X3JU_gtgbFklAqNt_6co5j8lkW-NJrQ")  # Бажано зберігати токен як секрет або змінну середовища
+BOT_TOKEN = os.getenv("8087847293:AAH5X3JU_gtgbFklAqNt_6co5j8lkW-NJrQ")  # Бажано зберігати токен як секрет або змінну середовища
 
 # Вебхук URL (заміни на свій actual Render URL)
 WEBHOOK_URL = "https://uno-flip-telegram-bot.onrender.com"
