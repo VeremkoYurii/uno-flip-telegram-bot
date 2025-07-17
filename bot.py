@@ -13,7 +13,7 @@ logging.basicConfig(
 TOKEN = os.getenv("BOT_TOKEN")  # Бажано зберігати токен як секрет або змінну середовища
 
 # Вебхук URL (заміни на свій actual Render URL)
-WEBHOOK_URL = "https://your-app-name.onrender.com/webhook"
+WEBHOOK_URL = "https://uno-flip-telegram-bot.onrender.com"
 
 # Команда /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
