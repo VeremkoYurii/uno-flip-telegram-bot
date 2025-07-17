@@ -8,4 +8,4 @@ services:
       - key: BOT_TOKEN
         value: <тут встав токен>
       - key: WEBHOOK_URL
-        value: https://your-app-name.onrender.com/webhook
+        value: https://uno-flip-telegram-bot.onrender.com
